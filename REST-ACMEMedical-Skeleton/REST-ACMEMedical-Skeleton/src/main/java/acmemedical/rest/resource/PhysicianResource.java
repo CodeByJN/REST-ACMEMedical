@@ -4,6 +4,7 @@
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
+ * @author (modified by) Sebastien Levesque - 040965642
  * 
  */
 package acmemedical.rest.resource;

@@ -6,6 +6,9 @@
  */
 package acmemedical.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,9 +20,16 @@ import java.util.Set;
 
 //TODO PH01 - Add the missing annotations.
 //TODO PH02 - Do we need a mapped super class? If so, which one?
+@Entity
+@NamedQueries({
+    @NamedQuery(
+        name = Physician.ALL_PHYSICIANS_QUERY_NAME,
+        query = "SELECT p FROM Physician p"
+    )
+})
 public class Physician extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	public static final String ALL_PHYSICIANS_QUERY_NAME = "Physician.findAll";
     public Physician() {
     	super();
     }

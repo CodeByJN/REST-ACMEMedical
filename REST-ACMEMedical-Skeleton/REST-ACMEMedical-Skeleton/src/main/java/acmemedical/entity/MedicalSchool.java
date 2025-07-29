@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 
 /**
  * The persistent class for the medical_school database table.
@@ -18,8 +21,30 @@ import java.util.Set;
 //TODO MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
 //TODO MS03 - Do we need a mapped super class?  If so, which one?
 //TODO MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
+
+@Entity
+@NamedQueries({
+    @NamedQuery(
+        name = MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME,
+        query = "SELECT ms FROM MedicalSchool ms"
+    ),
+    @NamedQuery(
+        name = MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME,
+        query = "SELECT ms FROM MedicalSchool ms " +
+                "LEFT JOIN FETCH ms.medicalTrainings " +
+                "WHERE ms.id = :param1"
+    ),
+    @NamedQuery(
+        name = MedicalSchool.IS_DUPLICATE_QUERY_NAME,
+        query = "SELECT COUNT(ms) FROM MedicalSchool ms " +
+                "WHERE LOWER(ms.name) = LOWER(:param1)"
+    )
+})
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String ALL_MEDICAL_SCHOOLS_QUERY_NAME     = "MedicalSchool.findAll";
+    public static final String SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME = "MedicalSchool.findById";
+    public static final String IS_DUPLICATE_QUERY_NAME            = "MedicalSchool.isDuplicate";
 	
 	// TODO MS05 - Add the missing annotations.
 	private String name;
