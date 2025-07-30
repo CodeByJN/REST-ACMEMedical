@@ -11,25 +11,37 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
+
 @SuppressWarnings("unused")
 
 /**
  * Abstract class that is base of (class) hierarchy for all @Entity classes
  * @param <ID> - type of composite key used
  */
-//TODO PC01 - Add annotation to define this class as superclass of all entities.  Please see Week 9 lecture slides.
-//TODO PC02 - Add annotation to place all JPA annotations on fields.
-//TODO PC03 - Add annotation for listener class.
+//DONE PC01 - Add annotation to define this class as superclass of all entities.  Please see Week 9 lecture slides.
+@MappedSuperclass
+//DONE PC02 - Add annotation to place all JPA annotations on fields.
+@Access(AccessType.FIELD)
+//DONE PC03 - Add annotation for listener class.
+@EntityListeners(PojoCompositeListener.class)
 public abstract class PojoBaseCompositeKey<ID extends Serializable> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	// TODO PC04 - Add missing annotations.
+	@Version
 	protected int version;
 
-	// TODO PC05 - Add missing annotations (hint, is this column on DB?).
+	// DONE PC05 - Add missing annotations (hint, is this column on DB?).
+	@Column(name = "created", nullable = false)
 	protected LocalDateTime created;
 
-	// TODO PC06 - Add missing annotations (hint, is this column on DB?).
+	// DONE PC06 - Add missing annotations (hint, is this column on DB?).
+	@Column(name = "updated", nullable  = false)
 	protected LocalDateTime updated;
 
 	public abstract ID getId();

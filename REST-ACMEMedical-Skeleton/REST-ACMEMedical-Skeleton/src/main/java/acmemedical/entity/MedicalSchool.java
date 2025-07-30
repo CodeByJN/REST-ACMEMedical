@@ -11,23 +11,47 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 /**
  * The persistent class for the medical_school database table.
  */
-//TODO MS01 - Add the missing annotations.
+//DONE MS01 - Add the missing annotations.
 //TODO MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
-//TODO MS03 - Do we need a mapped super class?  If so, which one?
+//DONE MS03 - Do we need a mapped super class?  If so, which one? no
 //TODO MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
+@Entity
+@Table(name = "medical_school")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = PublicSchool.class, name = "PublicSchool"),
+    @JsonSubTypes.Type(value = PrivateSchool.class, name = "PrivateSchool")
+})
+
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	// TODO MS05 - Add the missing annotations.
+	// DONE MS05 - Add the missing annotations.
+	@Column(name = "name", nullable = false, length = 50)
 	private String name;
 
-	// TODO MS06 - Add the 1:M annotation.  What should be the cascade and fetch types?
+	// DONE MS06 - Add the 1:M annotation.  What should be the cascade and fetch types?
+	@OneToMany(cascade=CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "medical_school")
 	private Set<MedicalTraining> medicalTrainings = new HashSet<>();
 
-	// TODO MS07 - Add missing annotation.
+	// DONE MS07 - Add missing annotation.
+	@Column(name = "public", nullable = false)
 	private boolean isPublic;
 
 	public MedicalSchool() {
@@ -39,7 +63,7 @@ public abstract class MedicalSchool extends PojoBase implements Serializable {
         this.isPublic = isPublic;
     }
 
-	// TODO MS08 - Is an annotation needed here?
+	// DONE MS08 - Is an annotation needed here ?no
 	public Set<MedicalTraining> getMedicalTrainings() {
 		return medicalTrainings;
 	}

@@ -11,22 +11,34 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @SuppressWarnings("unused")
 
 /**
  * The persistent class for the medical_training database table.
  */
-//TODO MT01 - Add the missing annotations.
-//TODO MT02 - Do we need a mapped super class?  If so, which one?
+//DONE MT01 - Add the missing annotations.
+//DONE MT02 - Do we need a mapped super class?  If so, which one? NO
+@Entity
+@Table(name = "medical_training")
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	// TODO MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
+	@ManyToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
 	private MedicalSchool school;
 
-	// TODO MT04 - Add annotations for 1:1.  What should be the cascade and fetch types?
+	// DONE MT04 - Add annotations for 1:1.  What should be the cascade and fetch types?
+	@OneToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+	@JoinColumn(name = "school_id", referencedColumnName="training_id")
 	private MedicalCertificate certificate;
 
 	@Embedded

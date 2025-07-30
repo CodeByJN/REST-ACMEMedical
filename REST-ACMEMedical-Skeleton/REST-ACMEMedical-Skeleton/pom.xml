@@ -155,7 +155,12 @@
             </exclusions>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+        <dependency>
+        	<groupId>com.algonquincollege.cst8277</groupId>
+        	<artifactId>JPA-Demo-LotsOfMappings</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
+     </dependencies>
 
     <build>
         <plugins>

@@ -8,13 +8,19 @@ package acmemedical.entity;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 @SuppressWarnings("unused")
 
 /**
  * The persistent class for the medical_certificate database table.
  */
-//TODO MC01 - Add the missing annotations.
-//TODO MC02 - Do we need a mapped super class?  If so, which one?
+//DONE MC01 - Add the missing annotations.
+//DONE MC02 - Do we need a mapped super class?  If so, which one? NO
+@Entity
+@Table(name = "medical_certificate")
 public class MedicalCertificate extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -24,7 +30,8 @@ public class MedicalCertificate extends PojoBase implements Serializable {
 	// TODO MC04 - Add annotations for M:1 mapping.  What should be the cascade and fetch types?
 	private Physician owner;
 
-	// TODO MC05 - Add annotations.
+	// DONE MC05 - Add annotations.
+	@Column(name = "signed", nullable = false)
 	private byte signed;
 
 	public MedicalCertificate() {
