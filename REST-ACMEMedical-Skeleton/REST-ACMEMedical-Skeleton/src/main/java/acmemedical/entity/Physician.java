@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ import jakarta.persistence.Table;
 //DONE PH02 - Do we need a mapped super class? If so, which one? 
 @Entity
 @Table(name = "physician")
+@AttributeOverride(name = "id", column = @Column(name = "physician_id"))
 public class Physician extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -34,11 +36,11 @@ public class Physician extends PojoBase implements Serializable {
     }
 
 	// DONE PH03 - Add annotations.
-    @Column(name = "first_name", nullable = false, length = 50)
+    @Column(name = "first_name", nullable = false)
 	private String firstName;
 
 	// DONE PH04 - Add annotations.
-    @Column(name = "last_name", nullable = false, length = 50)
+    @Column(name = "last_name", nullable = false)
 	private String lastName;
 
 	// DONE PH05 - Add annotations for 1:M relation.  What should be the cascade and fetch types?

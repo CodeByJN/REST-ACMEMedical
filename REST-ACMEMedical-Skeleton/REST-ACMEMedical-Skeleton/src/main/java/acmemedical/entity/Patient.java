@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +26,7 @@ import jakarta.persistence.Table;
 //DONE PA01 - Add the missing annotations.
 @Entity
 @Table(name = "patient")
+@AttributeOverride(name = "id", column = @Column(name = "patient_id"))
 //DONE PA02 - Do we need a mapped super class?  If so, which one? NO
 public class Patient extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;

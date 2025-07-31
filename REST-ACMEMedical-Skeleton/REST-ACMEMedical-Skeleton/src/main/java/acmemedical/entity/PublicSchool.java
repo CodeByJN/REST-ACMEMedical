@@ -9,11 +9,14 @@ package acmemedical.entity;
 
 import java.io.Serializable;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
-//TODO PUSC01 - Add missing annotations, please see Week 9 slides page 15.  Value 1 is public and value 0 is private.
-//TODO PUSC02 - Is a JSON annotation needed here? no
+//DONE PUSC01 - Add missing annotations, please see Week 9 slides page 15.  Value 1 is public and value 0 is private.
+//DONE PUSC02 - Is a JSON annotation needed here? no
 @Entity
+@DiscriminatorValue(value = "1")
 public class PublicSchool extends MedicalSchool implements Serializable {
 	private static final long serialVersionUID = 1L;
 

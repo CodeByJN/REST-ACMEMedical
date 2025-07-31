@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,10 +31,11 @@ import jakarta.persistence.Table;
 //DONE MT02 - Do we need a mapped super class?  If so, which one? NO
 @Entity
 @Table(name = "medical_training")
+@AttributeOverride(name = "id", column = @Column(name = "medical_training_id"))
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	// TODO MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
+	// DONE MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
 	@ManyToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
 	private MedicalSchool school;
 

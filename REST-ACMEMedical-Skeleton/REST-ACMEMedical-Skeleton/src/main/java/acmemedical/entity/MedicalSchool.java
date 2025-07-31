@@ -14,8 +14,11 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -27,12 +30,14 @@ import jakarta.persistence.Table;
  * The persistent class for the medical_school database table.
  */
 //DONE MS01 - Add the missing annotations.
-//TODO MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
+//DONE MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
 //DONE MS03 - Do we need a mapped super class?  If so, which one? no
-//TODO MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
+//DONE MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
 @Entity
 @Table(name = "medical_school")
+@AttributeOverride(name = "id", column = @Column(name = "medical_school_id"))
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "school_type", discriminatorType = DiscriminatorType.STRING)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = PublicSchool.class, name = "PublicSchool"),
@@ -43,7 +48,7 @@ public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	// DONE MS05 - Add the missing annotations.
-	@Column(name = "name", nullable = false, length = 50)
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	// DONE MS06 - Add the 1:M annotation.  What should be the cascade and fetch types?
@@ -51,7 +56,7 @@ public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private Set<MedicalTraining> medicalTrainings = new HashSet<>();
 
 	// DONE MS07 - Add missing annotation.
-	@Column(name = "public", nullable = false)
+	@Column(name = "public", nullable = false, columnDefinition = "bit")
 	private boolean isPublic;
 
 	public MedicalSchool() {

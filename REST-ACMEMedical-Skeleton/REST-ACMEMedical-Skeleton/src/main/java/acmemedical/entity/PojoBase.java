@@ -36,6 +36,8 @@ public abstract class PojoBase implements Serializable {
 
 	// DONE PB04 - Add missing annotations.
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	protected int id;
 
 	// DONE PB05 - Add missing annotations.
@@ -47,7 +49,7 @@ public abstract class PojoBase implements Serializable {
 	protected LocalDateTime created;
 
 	// DONE PB07 - Add missing annotations (hint, is this column on DB?).
-	@Column(name = "update")
+	@Column(name = "updated")
 	protected LocalDateTime updated;
 
 	public int getId() {

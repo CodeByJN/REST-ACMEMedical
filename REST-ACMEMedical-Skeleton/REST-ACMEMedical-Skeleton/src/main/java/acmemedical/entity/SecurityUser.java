@@ -13,8 +13,12 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -37,14 +41,16 @@ public class SecurityUser implements Serializable, Principal {
 
     //DONE SU02 - Add annotations.
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     protected int id;
     
     //DONE SU03 - Add annotations.
-    @Column(name = "username", nullable = false, length = 50)
+    @Column(name = "username", nullable = false)
     protected String username;
     
     //DONE SU04 - Add annotations.
-    @Column(name = "password_hash", nullable = false, length = 50)
+    @Column(name = "password_hash", nullable = false)
     protected String pwHash;
     
     //DONE SU05 - Add annotations.
@@ -52,7 +58,7 @@ public class SecurityUser implements Serializable, Principal {
     @JoinColumn(name = "physician_id")
     protected Physician physician;
     
-    //TODO SU06 - Add annotations.
+    //DONE SU06 - Add annotations.
     @ManyToMany
     @JoinTable(name = "user_has_role",
     		joinColumns = @JoinColumn(name = "user_id"),
@@ -87,7 +93,8 @@ public class SecurityUser implements Serializable, Principal {
         this.pwHash = pwHash;
     }
 
-    // TODO SU07 - Setup custom JSON serializer
+    // TODO SU07 - Setup custom JSON serializer.
+    //@JsonSerialize(using = (add a class that serializes security here).class)
     public Set<SecurityRole> getRoles() {
         return roles;
     }
