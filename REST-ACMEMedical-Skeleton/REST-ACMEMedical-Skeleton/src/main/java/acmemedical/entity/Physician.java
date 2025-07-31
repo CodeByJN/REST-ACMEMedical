@@ -14,6 +14,8 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -28,9 +30,16 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "physician")
 @AttributeOverride(name = "id", column = @Column(name = "physician_id"))
+@NamedQueries({
+    @NamedQuery(
+        name = Physician.ALL_PHYSICIANS_QUERY_NAME,
+        query = "SELECT p FROM Physician p"
+    )
+})
 public class Physician extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	public static final String ALL_PHYSICIANS_QUERY_NAME = "Physician.findAll";
+	
     public Physician() {
     	super();
     }

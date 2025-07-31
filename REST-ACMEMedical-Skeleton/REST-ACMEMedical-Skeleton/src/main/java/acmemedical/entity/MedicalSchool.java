@@ -20,6 +20,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -43,9 +45,28 @@ import jakarta.persistence.Table;
     @JsonSubTypes.Type(value = PublicSchool.class, name = "PublicSchool"),
     @JsonSubTypes.Type(value = PrivateSchool.class, name = "PrivateSchool")
 })
-
+@NamedQueries({
+    @NamedQuery(
+        name = MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME,
+        query = "SELECT ms FROM MedicalSchool ms"
+    ),
+    @NamedQuery(
+        name = MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME,
+        query = "SELECT ms FROM MedicalSchool ms " +
+                "LEFT JOIN FETCH ms.medicalTrainings " +
+                "WHERE ms.id = :param1"
+    ),
+    @NamedQuery(
+        name = MedicalSchool.IS_DUPLICATE_QUERY_NAME,
+        query = "SELECT COUNT(ms) FROM MedicalSchool ms " +
+                "WHERE LOWER(ms.name) = LOWER(:param1)"
+    )
+})
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String ALL_MEDICAL_SCHOOLS_QUERY_NAME     = "MedicalSchool.findAll";
+    public static final String SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME = "MedicalSchool.findById";
+    public static final String IS_DUPLICATE_QUERY_NAME            = "MedicalSchool.isDuplicate";
 	
 	// DONE MS05 - Add the missing annotations.
 	@Column(name = "name", nullable = false)
