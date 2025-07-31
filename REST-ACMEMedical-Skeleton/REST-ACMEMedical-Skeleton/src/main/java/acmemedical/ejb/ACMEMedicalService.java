@@ -275,4 +275,80 @@ public class ACMEMedicalService implements Serializable {
         return medicalTrainingToBeUpdated;
     }
     
+    @Transactional
+    public MedicalTraining deleteMedicalTraining(int id) {
+        MedicalTraining mt = getMedicalTrainingById(id);
+        if (mt != null) {
+            em.remove(mt);
+            return mt;
+        }
+        return null;
+    }
+    
+    public List<Patient> getAllPatients() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Patient> cq = cb.createQuery(Patient.class);
+        cq.select(cq.from(Patient.class));
+        return em.createQuery(cq).getResultList();
+    }
+
+    public Patient getPatientById(int id) {
+        return em.find(Patient.class, id);
+    }
+
+    @Transactional
+    public Patient persistPatient(Patient newPatient) {
+        em.persist(newPatient);
+        return newPatient;
+    }
+
+    @Transactional
+    public Patient updatePatient(int id, Patient updatedPatient) {
+        Patient existing = getPatientById(id);
+        if (existing != null) {
+            em.refresh(existing);
+            em.merge(updatedPatient);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public void deletePatientById(int id) {
+        Patient p = getPatientById(id);
+        if (p != null) {
+            em.remove(p);
+        }
+    }
+
+    
+    @Transactional
+    public Prescription persistPrescription(Prescription newPrescription) {
+        em.persist(newPrescription);
+        return newPrescription;
+    }
+
+    @Transactional
+    public Prescription updatePrescription(Prescription incoming) {
+        Prescription existing = em.find(Prescription.class, incoming.getId());
+        if (existing != null) {
+            em.refresh(existing);
+            em.merge(incoming);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public boolean deletePrescription(Prescription toDelete) {
+        Prescription existing = em.find(Prescription.class, toDelete.getId());
+        if (existing != null) {
+            em.remove(existing);
+            return true;
+        }
+        return false;
+    }
+
+
+    
 }

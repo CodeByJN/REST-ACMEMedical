@@ -23,49 +23,42 @@ public class MedicalTrainingResource {
     @EJB
     ACMEMedicalService service;
 
-    //Any user can list all MedicalTraining
     @GET
     @PermitAll
-    public Response list() {
-        List<MedicalTraining> items = service.getAll(MedicalTraining.class, "MedicalTraining.findAll");
-        return Response.ok(items).build();
+    public Response getAllMedicalTrainings() {
+        List<MedicalTraining> list = service.getAll(MedicalTraining.class, MedicalTraining.FIND_ALL);
+        return Response.ok(list).build();
     }
 
-    //Any user can get one MedicalTraining
     @GET
     @PermitAll
     @Path(RESOURCE_PATH_ID_PATH)
-    public Response get(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
+    public Response getMedicalTrainingById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
         MedicalTraining mt = service.getMedicalTrainingById(id);
-        return (mt == null) ? Response.status(Response.Status.NOT_FOUND).build()
-                            : Response.ok(mt).build();
+        return mt == null ? Response.status(Response.Status.NOT_FOUND).build() : Response.ok(mt).build();
     }
 
-    //Only ADMIN can create
     @POST
     @RolesAllowed(ADMIN_ROLE)
-    public Response create(MedicalTraining mt, @Context UriInfo uri) {
+    public Response addMedicalTraining(MedicalTraining mt, @Context UriInfo uriInfo) {
         MedicalTraining created = service.persistMedicalTraining(mt);
-        URI loc = uri.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
-        return Response.created(loc).entity(created).build();        // 201 + Location
+        URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
+        return Response.created(uri).entity(created).build();
     }
 
-    //Only ADMIN can update
     @PUT
     @RolesAllowed(ADMIN_ROLE)
     @Path(RESOURCE_PATH_ID_PATH)
-    public Response update(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, MedicalTraining incoming) {
+    public Response updateMedicalTraining(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, MedicalTraining incoming) {
         MedicalTraining updated = service.updateMedicalTraining(id, incoming);
-        return (updated == null) ? Response.status(Response.Status.NOT_FOUND).build()
-                                 : Response.ok(updated).build();
+        return updated == null ? Response.status(Response.Status.NOT_FOUND).build() : Response.ok(updated).build();
     }
 
-    //Only ADMIN can delete — service doesn’t have a delete so I left it like this
     @DELETE
     @RolesAllowed(ADMIN_ROLE)
     @Path(RESOURCE_PATH_ID_PATH)
-    public Response delete(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED)
-                       .entity("TODO: implement deleteMedicalTraining(int) in ACMEMedicalService").build();
+    public Response deleteMedicalTraining(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
+        MedicalTraining deleted = service.deleteMedicalTraining(id); // You need this in the service
+        return deleted == null ? Response.status(Response.Status.NOT_FOUND).build() : Response.ok(deleted).build();
     }
 }

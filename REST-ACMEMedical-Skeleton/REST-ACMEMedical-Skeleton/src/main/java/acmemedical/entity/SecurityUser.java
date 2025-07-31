@@ -150,4 +150,17 @@ public class SecurityUser implements Serializable, Principal {
         return builder.toString();
     }
     
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    protected Patient patient;
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    
 }

@@ -16,6 +16,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -32,8 +33,16 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "medical_training")
 @AttributeOverride(name = "id", column = @Column(name = "medical_training_id"))
+@NamedQuery(name = MedicalTraining.FIND_ALL, query = "SELECT mt FROM MedicalTraining mt")
+@NamedQuery(
+	    name = MedicalTraining.FIND_BY_ID,
+	    query = "SELECT mt FROM MedicalTraining mt WHERE mt.id = :param1"
+)
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String FIND_ALL = "MedicalTraining.findAll";
+	public static final String FIND_BY_ID = "MedicalTraining.findById";
+
 	
 	// DONE MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
 	@ManyToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)

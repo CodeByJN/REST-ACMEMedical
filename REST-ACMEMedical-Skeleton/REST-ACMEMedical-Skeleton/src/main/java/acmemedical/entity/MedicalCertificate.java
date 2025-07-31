@@ -12,6 +12,7 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -29,8 +30,14 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "medical_certificate")
 @AttributeOverride(name = "id", column = @Column(name = "medicinecert_id"))
+@NamedQuery(
+	    name = MedicalCertificate.ID_CARD_QUERY_NAME,
+	    query = "SELECT mc FROM MedicalCertificate mc WHERE mc.id = :param1"
+)
 public class MedicalCertificate extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String ID_CARD_QUERY_NAME = "MedicalCertificate.findById";
+
 	
 	// DONE MC03 - Add annotations for 1:1 mapping.  What should be the cascade and fetch types?
 	@OneToOne(cascade= CascadeType.MERGE,fetch=FetchType.LAZY)
