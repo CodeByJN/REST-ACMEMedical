@@ -354,5 +354,61 @@ public class ACMEMedicalService implements Serializable {
     }
 
 
+    @Transactional
+    public Medicine persistMedicine(Medicine newMedicine) {
+        em.persist(newMedicine);
+        return newMedicine;
+    }
+
+    @Transactional
+    public Medicine updateMedicine(int id, Medicine updatedMedicine) {
+        Medicine existing = em.find(Medicine.class, id);
+        if (existing != null) {
+            em.refresh(existing);
+            updatedMedicine.setId(id); // Ensures correct entity is merged
+            em.merge(updatedMedicine);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public boolean deleteMedicine(int id) {
+        Medicine med = em.find(Medicine.class, id);
+        if (med != null) {
+            em.remove(med);
+            return true;
+        }
+        return false;
+    }
+
     
+    @Transactional
+    public MedicalCertificate persistMedicalCertificate(MedicalCertificate mc) {
+        em.persist(mc);
+        return mc;
+    }
+
+    @Transactional
+    public MedicalCertificate updateMedicalCertificate(int id, MedicalCertificate updated) {
+        MedicalCertificate existing = em.find(MedicalCertificate.class, id);
+        if (existing != null) {
+            em.refresh(existing);
+            updated.setId(id); // ensure ID is not lost
+            em.merge(updated);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public boolean deleteMedicalCertificate(int id) {
+        MedicalCertificate mc = em.find(MedicalCertificate.class, id);
+        if (mc != null) {
+            em.remove(mc);
+            return true;
+        }
+        return false;
+    }
+
 }
