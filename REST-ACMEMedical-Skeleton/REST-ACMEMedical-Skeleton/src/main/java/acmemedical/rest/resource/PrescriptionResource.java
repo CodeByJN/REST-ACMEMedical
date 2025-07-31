@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.*;
 
 import acmemedical.ejb.ACMEMedicalService;
 import acmemedical.entity.Prescription;
+import acmemedical.entity.PrescriptionPK;
 
 @Path("/prescriptions")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -21,38 +22,54 @@ public class PrescriptionResource {
     @EJB
     ACMEMedicalService service;
 
-    // Only ADMIN can get all prescriptions
     @GET
     @RolesAllowed(ADMIN_ROLE)
     public Response getAll() {
-        List<Prescription> items = service.getAll(Prescription.class, "Prescription.findAll");
-        return Response.ok(items).build();
+        List<Prescription> prescriptions = service.getAll(Prescription.class, "Prescription.findAll");
+        return Response.ok(prescriptions).build();
     }
 
-    // Only ADMIN can create prescriptions
+    @GET
+    @Path("/{physicianId}/{patientId}")
+    @RolesAllowed(ADMIN_ROLE)
+    public Response get(@PathParam("physicianId") int physicianId,
+                        @PathParam("patientId") int patientId) {
+        PrescriptionPK id = new PrescriptionPK(physicianId, patientId);
+        Prescription found = service.getPrescriptionById(id);
+        return (found == null)
+            ? Response.status(Response.Status.NOT_FOUND).build()
+            : Response.ok(found).build();
+    }
+
     @POST
     @RolesAllowed(ADMIN_ROLE)
     public Response create(Prescription p, @Context UriInfo uri) {
         Prescription created = service.persistPrescription(p);
-        URI loc = uri.getAbsolutePathBuilder().build();  // can't point to exact ID without PK class
+        URI loc = uri.getAbsolutePathBuilder().build();
         return Response.created(loc).entity(created).build();
     }
 
-    // Only ADMIN can update prescriptions
     @PUT
+    @Path("/{physicianId}/{patientId}")
     @RolesAllowed(ADMIN_ROLE)
-    public Response update(Prescription incoming) {
-        Prescription updated = service.updatePrescription(incoming);
-        return (updated == null)
+    public Response update(@PathParam("physicianId") int physicianId,
+                           @PathParam("patientId") int patientId,
+                           Prescription updated) {
+        PrescriptionPK id = new PrescriptionPK(physicianId, patientId);
+        updated.setId(id);
+        Prescription modified = service.updatePrescription(id, updated);
+        return (modified == null)
             ? Response.status(Response.Status.NOT_FOUND).build()
-            : Response.ok(updated).build();
+            : Response.ok(modified).build();
     }
 
-    // Only ADMIN can delete prescriptions
     @DELETE
+    @Path("/{physicianId}/{patientId}")
     @RolesAllowed(ADMIN_ROLE)
-    public Response delete(Prescription toDelete) {
-        boolean success = service.deletePrescription(toDelete);
+    public Response delete(@PathParam("physicianId") int physicianId,
+                           @PathParam("patientId") int patientId) {
+        PrescriptionPK id = new PrescriptionPK(physicianId, patientId);
+        boolean success = service.deletePrescription(id);
         return success
             ? Response.noContent().build()
             : Response.status(Response.Status.NOT_FOUND).build();

@@ -322,6 +322,10 @@ public class ACMEMedicalService implements Serializable {
     }
 
     
+    public Prescription getPrescriptionById(PrescriptionPK id) {
+        return em.find(Prescription.class, id);
+    }
+
     @Transactional
     public Prescription persistPrescription(Prescription newPrescription) {
         em.persist(newPrescription);
@@ -329,21 +333,21 @@ public class ACMEMedicalService implements Serializable {
     }
 
     @Transactional
-    public Prescription updatePrescription(Prescription incoming) {
-        Prescription existing = em.find(Prescription.class, incoming.getId());
+    public Prescription updatePrescription(PrescriptionPK id, Prescription updatedPrescription) {
+        Prescription existing = em.find(Prescription.class, id);
         if (existing != null) {
             em.refresh(existing);
-            em.merge(incoming);
+            em.merge(updatedPrescription);
             em.flush();
         }
         return existing;
     }
 
     @Transactional
-    public boolean deletePrescription(Prescription toDelete) {
-        Prescription existing = em.find(Prescription.class, toDelete.getId());
-        if (existing != null) {
-            em.remove(existing);
+    public boolean deletePrescription(PrescriptionPK id) {
+        Prescription p = em.find(Prescription.class, id);
+        if (p != null) {
+            em.remove(p);
             return true;
         }
         return false;
