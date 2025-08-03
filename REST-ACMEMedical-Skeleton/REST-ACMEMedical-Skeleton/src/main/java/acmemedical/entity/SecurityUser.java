@@ -25,12 +25,17 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.NamedQuery;
 
 @SuppressWarnings("unused")
 
 /**
  * User class used for (JSR-375) Jakarta EE Security authorization/authentication
  */
+@NamedQuery(
+        name = "SecurityUser.userByName",
+        query = "SELECT u FROM SecurityUser u WHERE u.username = :param1"
+    )
 
 //DONE SU01 - Make this into JPA entity and add all the necessary annotations inside the class.
 @Entity
