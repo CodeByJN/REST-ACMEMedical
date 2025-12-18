@@ -275,4 +275,140 @@ public class ACMEMedicalService implements Serializable {
         return medicalTrainingToBeUpdated;
     }
     
+    @Transactional
+    public MedicalTraining deleteMedicalTraining(int id) {
+        MedicalTraining mt = getMedicalTrainingById(id);
+        if (mt != null) {
+            em.remove(mt);
+            return mt;
+        }
+        return null;
+    }
+    
+    public List<Patient> getAllPatients() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Patient> cq = cb.createQuery(Patient.class);
+        cq.select(cq.from(Patient.class));
+        return em.createQuery(cq).getResultList();
+    }
+
+    public Patient getPatientById(int id) {
+        return em.find(Patient.class, id);
+    }
+
+    @Transactional
+    public Patient persistPatient(Patient newPatient) {
+        em.persist(newPatient);
+        return newPatient;
+    }
+
+    @Transactional
+    public Patient updatePatient(int id, Patient updatedPatient) {
+        Patient existing = getPatientById(id);
+        if (existing != null) {
+            em.refresh(existing);
+            em.merge(updatedPatient);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public void deletePatientById(int id) {
+        Patient p = getPatientById(id);
+        if (p != null) {
+            em.remove(p);
+        }
+    }
+
+    
+    public Prescription getPrescriptionById(PrescriptionPK id) {
+        return em.find(Prescription.class, id);
+    }
+
+    @Transactional
+    public Prescription persistPrescription(Prescription newPrescription) {
+        em.persist(newPrescription);
+        return newPrescription;
+    }
+
+    @Transactional
+    public Prescription updatePrescription(PrescriptionPK id, Prescription updatedPrescription) {
+        Prescription existing = em.find(Prescription.class, id);
+        if (existing != null) {
+            em.refresh(existing);
+            em.merge(updatedPrescription);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public boolean deletePrescription(PrescriptionPK id) {
+        Prescription p = em.find(Prescription.class, id);
+        if (p != null) {
+            em.remove(p);
+            return true;
+        }
+        return false;
+    }
+
+
+    @Transactional
+    public Medicine persistMedicine(Medicine newMedicine) {
+        em.persist(newMedicine);
+        return newMedicine;
+    }
+
+    @Transactional
+    public Medicine updateMedicine(int id, Medicine updatedMedicine) {
+        Medicine existing = em.find(Medicine.class, id);
+        if (existing != null) {
+            em.refresh(existing);
+            updatedMedicine.setId(id); // Ensures correct entity is merged
+            em.merge(updatedMedicine);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public boolean deleteMedicine(int id) {
+        Medicine med = em.find(Medicine.class, id);
+        if (med != null) {
+            em.remove(med);
+            return true;
+        }
+        return false;
+    }
+
+    
+    @Transactional
+    public MedicalCertificate persistMedicalCertificate(MedicalCertificate mc) {
+        em.persist(mc);
+        return mc;
+    }
+
+    @Transactional
+    public MedicalCertificate updateMedicalCertificate(int id, MedicalCertificate updated) {
+        MedicalCertificate existing = em.find(MedicalCertificate.class, id);
+        if (existing != null) {
+            em.refresh(existing);
+            updated.setId(id); // ensure ID is not lost
+            em.merge(updated);
+            em.flush();
+        }
+        return existing;
+    }
+
+    @Transactional
+    public boolean deleteMedicalCertificate(int id) {
+        MedicalCertificate mc = em.find(MedicalCertificate.class, id);
+        if (mc != null) {
+            em.remove(mc);
+            return true;
+        }
+        return false;
+    }
+
 }

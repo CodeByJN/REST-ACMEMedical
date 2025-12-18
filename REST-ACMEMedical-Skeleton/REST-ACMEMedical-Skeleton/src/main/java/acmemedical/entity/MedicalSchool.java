@@ -11,23 +11,73 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 /**
  * The persistent class for the medical_school database table.
  */
-//TODO MS01 - Add the missing annotations.
-//TODO MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
-//TODO MS03 - Do we need a mapped super class?  If so, which one?
-//TODO MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
+//DONE MS01 - Add the missing annotations.
+//DONE MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
+//DONE MS03 - Do we need a mapped super class?  If so, which one? no
+//DONE MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
+@Entity
+@Table(name = "medical_school")
+@AttributeOverride(name = "id", column = @Column(name = "medical_school_id"))
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "school_type", discriminatorType = DiscriminatorType.STRING)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = PublicSchool.class, name = "PublicSchool"),
+    @JsonSubTypes.Type(value = PrivateSchool.class, name = "PrivateSchool")
+})
+@NamedQueries({
+    @NamedQuery(
+        name = MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME,
+        query = "SELECT ms FROM MedicalSchool ms"
+    ),
+    @NamedQuery(
+        name = MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME,
+        query = "SELECT ms FROM MedicalSchool ms " +
+                "LEFT JOIN FETCH ms.medicalTrainings " +
+                "WHERE ms.id = :param1"
+    ),
+    @NamedQuery(
+        name = MedicalSchool.IS_DUPLICATE_QUERY_NAME,
+        query = "SELECT COUNT(ms) FROM MedicalSchool ms " +
+                "WHERE LOWER(ms.name) = LOWER(:param1)"
+    )
+})
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String ALL_MEDICAL_SCHOOLS_QUERY_NAME     = "MedicalSchool.findAll";
+    public static final String SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME = "MedicalSchool.findById";
+    public static final String IS_DUPLICATE_QUERY_NAME            = "MedicalSchool.isDuplicate";
 	
-	// TODO MS05 - Add the missing annotations.
+	// DONE MS05 - Add the missing annotations.
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	// TODO MS06 - Add the 1:M annotation.  What should be the cascade and fetch types?
+	// DONE MS06 - Add the 1:M annotation.  What should be the cascade and fetch types?
+	@OneToMany(cascade=CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "medical_school")
 	private Set<MedicalTraining> medicalTrainings = new HashSet<>();
 
-	// TODO MS07 - Add missing annotation.
+	// DONE MS07 - Add missing annotation.
+	@Column(name = "public", nullable = false, columnDefinition = "bit")
 	private boolean isPublic;
 
 	public MedicalSchool() {
@@ -39,7 +89,7 @@ public abstract class MedicalSchool extends PojoBase implements Serializable {
         this.isPublic = isPublic;
     }
 
-	// TODO MS08 - Is an annotation needed here?
+	// DONE MS08 - Is an annotation needed here ?no
 	public Set<MedicalTraining> getMedicalTrainings() {
 		return medicalTrainings;
 	}

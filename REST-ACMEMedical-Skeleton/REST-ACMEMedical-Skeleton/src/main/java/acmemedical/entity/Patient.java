@@ -10,38 +10,57 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 @SuppressWarnings("unused")
 
 /**
  * The persistent class for the patient database table.
  */
-//TODO PA01 - Add the missing annotations.
-//TODO PA02 - Do we need a mapped super class?  If so, which one?
+//DONE PA01 - Add the missing annotations.
+@Entity
+@Table(name = "patient")
+@AttributeOverride(name = "id", column = @Column(name = "patient_id"))
+//DONE PA02 - Do we need a mapped super class?  If so, which one? NO
 public class Patient extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	// TODO PA03 - Add missing annotations.
+	// DONE PA03 - Add missing annotations.
+	@Column(name = "firstName", nullable = false, length = 50)
 	private String firstName;
 
-	// TODO PA04 - Add missing annotations.
+	// DONE PA04 - Add missing annotations
+	@Column(name = "lastName", nullable = false, length = 50)
 	private String lastName;
 
-	// TODO PA05 - Add missing annotations.
+	// DONE PA05 - Add missing annotations.
+	@Column(name = "birthYear", nullable = false)
 	private int year;
 
-	// TODO PA06 - Add missing annotations.
+	// DONE PA06 - Add missing annotations.
+	@Column(name = "address", nullable = false, length = 100)
 	private String address;
 
-	// TODO PA07 - Add missing annotations.
+	// DONE PA07 - Add missing annotations.
+	@Column(name = "height", nullable = false)
 	private int height;
 
-	// TODO PA08 - Add missing annotations.
+	// DONE PA08 - Add missing annotations.
+	@Column(name = "weight", nullable = false)
 	private int weight;
 
-	// TODO PA09 - Add missing annotations.
+	// DONE PA09 - Add missing annotations.
+	@Column(name = "smoker", nullable = false)
 	private byte smoker;
 
-	// TODO PA10 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	// DONE PA10 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "patient")
 	private Set<Prescription> prescriptions = new HashSet<>();
 
 	public Patient() {

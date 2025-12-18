@@ -13,30 +13,61 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.NamedQuery;
+
 @SuppressWarnings("unused")
 
 /**
  * User class used for (JSR-375) Jakarta EE Security authorization/authentication
  */
+@NamedQuery(
+        name = "SecurityUser.userByName",
+        query = "SELECT u FROM SecurityUser u WHERE u.username = :param1"
+    )
 
-//TODO SU01 - Make this into JPA entity and add all the necessary annotations inside the class.
+//DONE SU01 - Make this into JPA entity and add all the necessary annotations inside the class.
+@Entity
+@Table(name = "security_user")
 public class SecurityUser implements Serializable, Principal {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    //TODO SU02 - Add annotations.
+    //DONE SU02 - Add annotations.
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     protected int id;
     
-    //TODO SU03 - Add annotations.
+    //DONE SU03 - Add annotations.
+    @Column(name = "username", nullable = false)
     protected String username;
     
-    //TODO SU04 - Add annotations.
+    //DONE SU04 - Add annotations.
+    @Column(name = "password_hash", nullable = false)
     protected String pwHash;
     
-    //TODO SU05 - Add annotations.
+    //DONE SU05 - Add annotations.
+    @ManyToOne
+    @JoinColumn(name = "physician_id")
     protected Physician physician;
     
-    //TODO SU06 - Add annotations.
+    //DONE SU06 - Add annotations.
+    @ManyToMany
+    @JoinTable(name = "user_has_role",
+    		joinColumns = @JoinColumn(name = "user_id"),
+    		inverseJoinColumns = @JoinColumn(name = "role_id"))
     protected Set<SecurityRole> roles = new HashSet<SecurityRole>();
 
     public SecurityUser() {
@@ -67,7 +98,8 @@ public class SecurityUser implements Serializable, Principal {
         this.pwHash = pwHash;
     }
 
-    // TODO SU07 - Setup custom JSON serializer
+    // TODO SU07 - Setup custom JSON serializer.
+    //@JsonSerialize(using = (add a class that serializes security here).class)
     public Set<SecurityRole> getRoles() {
         return roles;
     }
@@ -122,5 +154,18 @@ public class SecurityUser implements Serializable, Principal {
         builder.append("SecurityUser [id = ").append(id).append(", username = ").append(username).append("]");
         return builder.toString();
     }
+    
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    protected Patient patient;
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
     
 }

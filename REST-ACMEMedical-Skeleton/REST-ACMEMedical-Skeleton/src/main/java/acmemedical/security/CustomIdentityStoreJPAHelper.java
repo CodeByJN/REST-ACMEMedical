@@ -50,6 +50,14 @@ public class CustomIdentityStoreJPAHelper {
          *         requests will fail, none of the REST'ful endpoints will work.
          *  
          */
+        try {
+        	   TypedQuery<SecurityUser> query = em.createNamedQuery("SecurityUser.userByName", SecurityUser.class);
+        	   query.setParameter(PARAM1, username);
+        	   user = query.getSingleResult();
+        	} catch (NoResultException e) {
+        	   LOG.debug("No user found with username = {}", username);
+        	}
+        
         return user;
     }
 
